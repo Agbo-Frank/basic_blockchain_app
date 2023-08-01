@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import { formatAddress } from "../utils";
-import dummyData from "../utils/dummyData";
 import { TransactionContext } from "../context/Transaction";
 
 interface IFCTransactionCard {
@@ -13,7 +12,7 @@ interface IFCTransactionCard {
     url?: string
 }
 
-const TransactionsCard = ({ addressTo, addressFrom, timestamp, message, keyword, amount, url }: IFCTransactionCard) => {
+const TransactionsCard = ({ addressTo, addressFrom, timestamp, message, amount, }: IFCTransactionCard) => {
     // const gifUrl = useFetch({ keyword });
     return (
       <div className="bg-[#181918] m-4 flex flex-1
