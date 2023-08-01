@@ -28,4 +28,8 @@ contract Transactions {
 
         transactions.push(transaction);
     }
+    
+    function getAllTransaction() public view returns (TransferStruct[] memory) {
+        return transactions;
+    }
 }

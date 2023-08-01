@@ -2,14 +2,15 @@ import { AiFillPlayCircle } from "react-icons/ai"
 import { SiEthereum } from "react-icons/si"
 import { BsInfoCircle } from "react-icons/bs"
 import { Loader } from "."
-import { useContext } from "react"
+import { ChangeEvent, FormEvent, useContext, useState } from "react"
 import { TransactionContext } from "../context/Transaction"
+import { formatAddress } from "../utils"
 
 interface Inputprops {
     placeholder: string
     name: string
     type: string
-    value?: string
+    value?: string | number
     handleChange: (e: any, name: string) => any
 }
 
@@ -27,8 +28,21 @@ const Input = ({ placeholder, name, type, value, handleChange }: Inputprops) => 
   );
 
 export default function Welcome(){
-    const { connectWallet, account } = useContext(TransactionContext)
-    const handleChange = (e: any, name: string) => {}
+    const { connectWallet, account, addToTransaction, addingTransaction } = useContext(TransactionContext)
+    const initialValues = {
+        addressTo: "",
+        amount: 0,
+        keyword: "",
+        message: "",
+    }
+    const [form_data, setFormData] = useState(initialValues)
+    const handleChange = (e: ChangeEvent<HTMLInputElement>, name: string) => {
+        setFormData(prev => ({...prev, [name]: e.target.value}))
+    }
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        if(addToTransaction) addToTransaction(form_data).finally(() => setFormData(initialValues))
+    }
     return (
         <div className="flex w-full justify-center items-center">
             <div className="flex mf:flex-row flex-col items-start justify-between mf:p-20 py-12 px-4">
@@ -41,7 +55,7 @@ export default function Welcome(){
                     </p>
                     
                     {
-                        account && account.length === 0 &&
+                        account?.length === 0 &&
                         <button 
                             type="button"
                             onClick={connectWallet}
@@ -68,7 +82,7 @@ export default function Welcome(){
                             </div>
                             <div>
                                 <p className="text-white font-light text-sm">
-                                {/* {shortenAddress(currentAccount)} */}
+                                    {account ? formatAddress(account):"Address"}
                                 </p>
                                 <p className="text-white font-semibold text-lg mt-1">
                                 Ethereum
@@ -76,26 +90,23 @@ export default function Welcome(){
                             </div>
                             </div>
                         </div>
-                        <div className="p-5 sm:w-96 w-full flex flex-col justify-start items-center blue-glassmorphism">
-                            <Input placeholder="Address To" name="addressTo" type="text" handleChange={handleChange} />
-                            <Input placeholder="Amount (ETH)" name="amount" type="number" handleChange={handleChange} />
-                            <Input placeholder="Keyword (Gif)" name="keyword" type="text" handleChange={handleChange} />
-                            <Input placeholder="Enter Message" name="message" type="text" handleChange={handleChange} />
+                        <form onSubmit={handleSubmit} className="p-5 sm:w-96 w-full flex flex-col justify-start items-center blue-glassmorphism">
+                            <Input placeholder="Address To" name="addressTo" type="text" value={form_data.addressTo}  handleChange={ handleChange} />
+                            <Input placeholder="Amount (ETH)" name="amount" type="text" value={form_data.amount} handleChange={handleChange} />
+                            <Input placeholder="Keyword (Gif)" name="keyword" type="text" value={form_data.keyword} handleChange={handleChange} />
+                            <Input placeholder="Enter Message" name="message" type="text" value={form_data.message} handleChange={handleChange} />
 
                             <div className="h-[1px] w-full bg-gray-400 my-2" />
 
-                            {false
+                            {addingTransaction
                             ? <Loader />
                             : (
                                 <button
-                                type="button"
-                                // onClick={handleSubmit}
+                                type="submit"
                                 className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
-                                >
-                                Send now
-                                </button>
+                                >Send now</button>
                             )}
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>

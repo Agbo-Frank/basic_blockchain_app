@@ -1,5 +1,5 @@
 import './index.css'
-import { Footer, Navbar, Services, Transaction, Welcome } from "./components"
+import { Footer, Navbar, Services, Transactions, Welcome } from "./components"
 
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
         <Welcome />
       </div>
       <Services />
-      <Transaction />
+      <Transactions />
       <Footer />
     </div>
   )
